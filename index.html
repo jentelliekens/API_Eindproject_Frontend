@@ -1,0 +1,127 @@
+<html>
+<head>
+    <script defer src="https://unpkg.com/alpinejs@3.5.0/dist/cdn.min.js"></script>
+</head>
+
+<body>
+  <div x-data="{
+    responsedata: null,
+    ploeg_stands: null,
+    ploeg_stamnummers: null,
+    ploeg_naams: null,
+
+    async callmethod1() {
+        this.responsedata = await (await fetch('https://useritem-api-service-api-eindproject-jentelliekens.cloud.okteto.net/ploegen/',
+        {
+            method: 'POST',
+            body: JSON.stringify({
+
+                ploeg_stand: this.ploeg_stands,
+                ploeg_stamnummer: this.ploeg_stamnummers,
+                ploeg_naam: this.ploeg_naams,
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+        })).json();
+
+        console.log(this.responsedata);
+    },
+}">
+      <h2>Maak een nieuwe ploeg aan: </h2>
+      <p>Stand:</p>
+      <input type="number" x-model="ploeg_stands">
+      <p>Stamnummer: </p>
+      <input type="number" x-model="ploeg_stamnummers">
+      <p>Naam:</p>
+      <input type="text" x-model="ploeg_naams">
+      <button  x-on:click="callmethod1">Maak ploeg</button>
+    </div>
+
+    <div
+      x-cloak
+      x-data="{ploegen: []}"
+      x-init="fetch('https://useritem-api-service-api-eindproject-jentelliekens.cloud.okteto.net/ploegen/')
+      .then(response => response.json())
+      .then(response => { ploegen = response; console.log(response);})"
+    >
+        <h2>Overzicht Ploegen</h2>
+      <table>
+        <tr>
+            <th>ID</th>
+            <th>Stand</th>
+            <th>Stamnummer</th>
+            <th>Naam</th>
+        </tr>
+
+        <template x-for="ploeg in ploegen" :key="ploeg.ploeg_id">
+          <tr>
+            <td scope="row"  x-text="ploeg.ploeg_id"></td>
+            <td  x-text="ploeg.ploeg_stand"></td>
+            <td  x-text="ploeg.ploeg_stamnummer"></td>
+            <td  x-text="ploeg.ploeg_naam"></td>
+          </tr>
+        </template>
+      </table>
+    </div>
+
+    <div
+      x-cloak
+      x-data="{trainers: []}"
+      x-init="fetch('https://useritem-api-service-api-eindproject-jentelliekens.cloud.okteto.net/trainers/')
+      .then(response => response.json())
+      .then(response => { trainers = response; console.log(response);})"
+    >
+        <h2>Overzicht trainers</h2>
+      <table>
+        <tr>
+            <th>ID</th>
+            <th>Naam</th>
+            <th>Leeftijd</th>
+            <th>Nationaliteit</th>
+            <th>ID ploeg</th>
+        </tr>
+
+        <template x-for="trainer in trainers" :key="trainer.trainer_id">
+          <tr>
+            <td scope="row"  x-text="trainer.trainer_id"></td>
+            <td  x-text="trainer.trainer_naam"></td>
+            <td  x-text="trainer.trainer_leeftijd"></td>
+            <td  x-text="trainer.trainer_nationaliteit"></td>
+            <td  x-text="trainer.ploeg_id"></td>
+          </tr>
+        </template>
+      </table>
+    </div>
+
+    <div
+      x-cloak
+      x-data="{stadions: []}"
+      x-init="fetch('https://useritem-api-service-api-eindproject-jentelliekens.cloud.okteto.net/stadions/')
+      .then(response => response.json())
+      .then(response => { stadions = response; console.log(response);})"
+    >
+        <h2>Overzicht Stadions</h2>
+      <table>
+        <tr>
+            <th>ID</th>
+            <th>Bouwjaar</th>
+            <th>Naam</th>
+            <th>Capaciteit</th>
+            <th>ID ploeg</th>
+        </tr>
+
+        <template x-for="stadion in stadions" :key="stadion.trainer_id">
+          <tr>
+            <td scope="row"  x-text="stadion.stadion_id"></td>
+            <td  x-text="stadion.stadion_bouwjaar"></td>
+            <td  x-text="stadion.stadion_naam"></td>
+            <td  x-text="stadion.stadion_capaciteit"></td>
+            <td  x-text="stadion.ploeg_id"></td>
+          </tr>
+        </template>
+      </table>
+    </div>
+
+ </body>
+</html>
